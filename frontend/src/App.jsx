@@ -35,9 +35,10 @@ function App(){
     if(!token)return
     try{
       const me=await request('/auth/me');setUser(me)
-      const [a,d]=await Promise.all([request('/ashramas'),isAdmin?request('/admin/donations'):request('/donations/mine')])
+      const admin=me.role==='admin'
+      const [a,d]=await Promise.all([request('/ashramas'),admin?request('/admin/donations'):request('/donations/mine')])
       setAshramas(a);setDonations(d)
-      if(me.role==='admin'){
+      if(admin){
         const [stats,people,allA]=await Promise.all([request('/admin/dashboard'),request('/admin/donors'),request('/admin/ashramas')])
         setDashboard(stats);setDonors(people);setAshramas(allA.filter(x=>x.is_verified))
       }
