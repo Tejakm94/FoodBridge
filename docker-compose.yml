@@ -1,0 +1,25 @@
+services:
+  api:
+    build: ./backend
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: sqlite:////data/foodbridge.db
+    volumes:
+      - foodbridge_data:/data
+    ports:
+      - "8000:8000"
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 20s
+      timeout: 5s
+      retries: 5
+  web:
+    build: ./frontend
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+volumes:
+  foodbridge_data:
