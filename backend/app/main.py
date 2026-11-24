@@ -209,7 +209,7 @@ def startup():
                 ("Demo Seva Nilaya - Tumakuru", "Tumakuru", "Tumakuru"),
             ]
             for name, city, district in demos:
-                db.add(Ashrama(name=name, city=city, district=district, address="Demo address - replace after verification", capacity_meals=100, is_verified=True, is_demo=True))
+                db.add(Ashrama(name=name, city=city, district=district, address="Demo address - replace after verification", capacity_meals=100, is_verified=False, is_demo=True))
         db.commit()
 
 @app.get("/api/health")
@@ -275,7 +275,7 @@ def admin_dashboard(user: User = Depends(admin_user), db: Session = Depends(get_
         "donations": db.scalar(select(func.count(Donation.id))) or 0,
         "pending": db.scalar(select(func.count(Donation.id)).where(Donation.status == "submitted")) or 0,
         "delivered": db.scalar(select(func.count(Donation.id)).where(Donation.status.in_(["delivered", "confirmed"]))) or 0,
-        "meals": db.scalar(select(func.coalesce(func.sum(Donation.quantity), 0)).where(Donation.status.in_(["delivered", "confirmed"]))) or 0
+        "meals": db.scalar(select(func.coalesce(func.sum(Donation.quantity), 0)).where(Donation.unit == "meals", Donation.status.in_(["delivered", "confirmed"]))) or 0
     }
 
 @app.get("/api/admin/donations")
