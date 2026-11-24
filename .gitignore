@@ -1,0 +1,14 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.pytest_cache/
+# Node
+node_modules/
+dist/
+# Local database
+*.db
+*.sqlite3
+.DS_Store
